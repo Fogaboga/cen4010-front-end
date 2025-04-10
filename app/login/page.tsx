@@ -17,6 +17,9 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [isClient, setIsClient] = useState(false);
+  let failedLogin = 0;
+  const maxFailedLogin = 3;
+  let disable = false;
 
   // Set is client to true when the component is mounted to avoid SSR issues
   useEffect(() => {
@@ -27,6 +30,11 @@ const Login: React.FC = () => {
     e.preventDefault();
     
     if (!isClient) return;
+    //dissables login attempts if disable has been triggered, added by bailey
+    if (disable) {
+      setError('Too many failed login attempts. Please try again later.');
+      return;
+    }
 
     // Send POST request to the server
     try {
@@ -44,7 +52,13 @@ const Login: React.FC = () => {
       } else {
         const data = await res.json();
         setError(data.message || 'Something went wrong');
-      }
+        //Added by bailey, this makes a disable button after 3 failed logins
+        failedLogin++;
+        if (failedLogin >= maxFailedLogin) {
+          setTimeout(() => {
+            disable = true;
+      }, 1000 * 60 * 5); // Disable for 5 minutes
+      //end
     } catch (error) {
       setError('Failed to connect to server.' + error);
     }
