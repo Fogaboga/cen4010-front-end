@@ -6,6 +6,10 @@ export default function Home() {
       <a href="/login" className="mt-6 inline-block text-blue-600 hover:underline">
         Go to Login
       </a>
+      <br/>
+      <a href="/registration" className="mt-6 inline-block text-blue-600 hover:underline">
+        Make an acount
+      </a>
     </main>
   );
 }

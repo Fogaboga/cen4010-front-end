@@ -58,11 +58,13 @@ const Login: React.FC = () => {
           setTimeout(() => {
             disable = true;
       }, 1000 * 60 * 5); // Disable for 5 minutes
-      //end
+        }
+      } //end try block
     } catch (error) {
       setError('Failed to connect to server.' + error);
     }
   };
+
 
   return (
     <div style={{ maxWidth: '400px', margin: '2rem auto', padding: '1rem', border: '1px solid #ccc' }}>
@@ -93,7 +95,7 @@ const Login: React.FC = () => {
           />
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit" style={{ padding: '0.5rem 1rem' }}>Login</button>
+        <button type="submit" className="mt-6 inline-block text-blue-600 hover:underline">Login</button>
       </form>
     </div>
   );
