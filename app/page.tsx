@@ -10,6 +10,10 @@ export default function Home() {
       <a href="/registration" className="mt-6 inline-block text-blue-600 hover:underline">
         Make an acount
       </a>
+      <br/>
+      <a href="/dashboard" className="mt-6 inline-block text-blue-600 hover:underline">
+        debug to dashboard
+      </a>
     </main>
   );
 }

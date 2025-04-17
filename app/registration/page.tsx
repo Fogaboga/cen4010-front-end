@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";  
 
+const router=useRouter(); // Initialize the router
 const UserRegistration: React.FC = () => {
 const [username, setUsername] = useState<string>('');
 const [password, setPassword] = useState<string>('');  
@@ -32,6 +33,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setUsername("");
         setEmail("");
         setPassword("");
+        router.push("/login"); // Redirect to login page after successful registration
       } else {
         // Handle errors from the backend
         const data = await response.json();

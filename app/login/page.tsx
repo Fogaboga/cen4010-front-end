@@ -30,7 +30,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     
     if (!isClient) return;
-    //dissables login attempts if disable has been triggered, added by bailey
+    //dissables login attempts if disable has been triggered
     if (disable) {
       setError('Too many failed login attempts. Please try again later.');
       return;
@@ -48,11 +48,11 @@ const Login: React.FC = () => {
 
       if (res.ok) {
         console.log('Login successful');
-        router.push('/');
+        router.push('/dashboard'); // Redirect to the dashboard page
       } else {
         const data = await res.json();
         setError(data.message || 'Something went wrong');
-        //Added by bailey, this makes a disable button after 3 failed logins
+        //this makes a disable button after 3 failed logins
         failedLogin++;
         if (failedLogin >= maxFailedLogin) {
           setTimeout(() => {
@@ -79,7 +79,7 @@ const Login: React.FC = () => {
             value={username}
             onChange={e => setUsername(e.target.value)}
             required
-            style={{ width: '100%', padding: '0.5rem' }}
+            style={{ color: "purple", width: '100%', padding: '0.5rem' }}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
@@ -91,7 +91,7 @@ const Login: React.FC = () => {
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
-            style={{ width: '100%', padding: '0.5rem' }}
+            style={{ color: "purple", width: '100%', padding: '0.5rem' }}
           />
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
