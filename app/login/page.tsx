@@ -17,9 +17,9 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [isClient, setIsClient] = useState(false);
-  let failedLogin = 0;
+  const [failedLogin, setFailedLogin] = useState<number>(0); // Track failed login attempts
+  const [disable, setDisable] = useState<boolean>(false); // Manage disable state
   const maxFailedLogin = 3;
-  let disable = false;
 
   // Set is client to true when the component is mounted to avoid SSR issues
   useEffect(() => {
@@ -28,9 +28,10 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!isClient) return;
-    //dissables login attempts if disable has been triggered
+
+    // Disable login attempts if the disable flag is triggered
     if (disable) {
       setError('Too many failed login attempts. Please try again later.');
       return;
@@ -52,19 +53,22 @@ const Login: React.FC = () => {
       } else {
         const data = await res.json();
         setError(data.message || 'Something went wrong');
-        //this makes a disable button after 3 failed logins
-        failedLogin++;
-        if (failedLogin >= maxFailedLogin) {
-          setTimeout(() => {
-            disable = true;
-      }, 1000 * 60 * 5); // Disable for 5 minutes
-        }
-      } //end try block
+        // Increment failed login attempts
+        setFailedLogin(prev => {
+          const newFailedLogin = prev + 1;
+          if (newFailedLogin >= maxFailedLogin) {
+            setDisable(true); // Disable further login attempts
+            setTimeout(() => {
+              setDisable(false); // Re-enable after 5 minutes
+            }, 1000 * 60 * 5);
+          }
+          return newFailedLogin;
+        });
+      }
     } catch (error) {
-      setError('Failed to connect to server.' + error);
+      setError('Failed to connect to server. Please try again later.');
     }
   };
-
 
   return (
     <div style={{ maxWidth: '400px', margin: '2rem auto', padding: '1rem', border: '1px solid #ccc' }}>
@@ -75,11 +79,12 @@ const Login: React.FC = () => {
           <br />
           <input
             id="username"
-            type="username"
+            type="text"
             value={username}
             onChange={e => setUsername(e.target.value)}
             required
             style={{ color: "purple", width: '100%', padding: '0.5rem' }}
+            disabled={disable} // Disable input if login is disabled
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
@@ -92,10 +97,17 @@ const Login: React.FC = () => {
             onChange={e => setPassword(e.target.value)}
             required
             style={{ color: "purple", width: '100%', padding: '0.5rem' }}
+            disabled={disable} // Disable input if login is disabled
           />
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit" className="mt-6 inline-block text-blue-600 hover:underline">Login</button>
+        <button
+          type="submit"
+          className="mt-6 inline-block text-blue-600 hover:underline"
+          disabled={disable} // Disable button if login is disabled
+        >
+          Login
+        </button>
       </form>
     </div>
   );
